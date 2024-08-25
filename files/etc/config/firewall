@@ -1,9 +1,9 @@
 
 config defaults
-	option syn_flood '1'
 	option input 'REJECT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
+	option synflood_protect '1'
 
 config zone 'lan'
 	option name 'lan'
@@ -16,13 +16,13 @@ config zone 'lan'
 
 config zone 'wan'
 	option name 'wan'
-	list network 'wan'
-	list network 'wan6'
 	option input 'REJECT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
 	option masq '1'
 	option mtu_fix '1'
+	list network 'wan'
+	list network 'wan6'
 
 config forwarding
 	option src 'lan'
@@ -134,7 +134,7 @@ config redirect
 	option name 'lxc.ubuntu'
 	option src 'wan'
 	option src_dport '22'
-	option dest_ip '192.168.1.111'
+	option dest_ip '192.168.1.101'
 	option dest_port '22'
 
 config redirect
@@ -143,7 +143,7 @@ config redirect
 	option name 'mac'
 	option src 'wan'
 	option src_dport '5900'
-	option dest_ip '192.168.1.198'
+	option dest_ip '192.168.1.192'
 	option dest_port '5900'
 
 config rule
@@ -153,25 +153,19 @@ config rule
 	option dest_port '51820'
 	option target 'ACCEPT'
 
+config zone
+	option name 'zerotier'
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'ACCEPT'
+	list network 'zerotier'
+
+config forwarding
+	option src 'zerotier'
+	option dest 'wan'
+
 config include 'zerotier'
 	option type 'script'
 	option path '/usr/share/zerotier/firewall.include'
 	option reload '1'
 
-config redirect
-	option dest 'lan'
-	option target 'DNAT'
-	option name 'rustdesk'
-	option src 'wan'
-	option src_dport '21116'
-	option dest_ip '192.168.1.120'
-	option dest_port '21116'
-
-config redirect
-	option dest 'lan'
-	option target 'DNAT'
-	option name 'rustdeskserver'
-	option src 'wan'
-	option src_dport '21117'
-	option dest_ip '192.168.1.120'
-	option dest_port '21117'
